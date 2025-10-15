@@ -170,7 +170,7 @@ resource "aws_codepipeline" "godwin_backend_pipeline" {
 
       configuration = {
         Owner          = "progee1"
-        Repo           = "bulb_pipeline"
+        Repo           = "farm-stack-backend"
         Branch         = "main"
         OAuthToken     = data.aws_ssm_parameter.godwin_github_token.value
       }
