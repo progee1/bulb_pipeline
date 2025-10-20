@@ -19,7 +19,8 @@ phases:
       - pwd
       - ls
       - terraform init -no-color
-      - terraform destroy --auto-approve
+      - terraform apply --auto-approve
+      - ls
  
   post_build:
     commands:
