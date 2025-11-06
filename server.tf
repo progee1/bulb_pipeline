@@ -1,49 +1,49 @@
-resource "aws_vpc" "godwin_vpc" {
+resource "aws_vpc" "Godwin_vpc" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"
 }
  
-resource "aws_internet_gateway" "john_igw" {
-  vpc_id = aws_vpc.godwin_vpc.id
+resource "aws_internet_gateway" "Godwin_igw" {
+  vpc_id = aws_vpc.Godwin_vpc.id
  
   tags = {
-    Name = "john_igw"
+    Name = "Godwin_igw"
   }
 }
  
-resource "aws_subnet" "john_public_subnet" {
-  vpc_id                  = aws_vpc.godwin_vpc.id
+resource "aws_subnet" "Godwin_public_subnet" {
+  vpc_id                  = aws_vpc.Godwin_vpc.id
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
  
   tags = {
-    Name = "john_public_subnet"
+    Name = "Godwin_public_subnet"
   }
 }
  
-resource "aws_route_table" "john_public_route_table" {
-  vpc_id = aws_vpc.godwin_vpc.id
+resource "aws_route_table" "Godwin_public_route_table" {
+  vpc_id = aws_vpc.Godwin_vpc.id
  
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.john_igw.id
+    gateway_id = aws_internet_gateway.Godwin_igw.id
   }
  
   tags = {
-    Name = "john_public_route_table"
+    Name = "Godwin_public_route_table"
   }
 }
  
-resource "aws_route_table_association" "john_route_table_association" {
-  subnet_id      = aws_subnet.john_public_subnet.id
-  route_table_id = aws_route_table.john_public_route_table.id
+resource "aws_route_table_association" "Godwin_route_table_association" {
+  subnet_id      = aws_subnet.Godwin_public_subnet.id
+  route_table_id = aws_route_table.Godwin_public_route_table.id
 }
  
-resource "aws_security_group" "john_frontend_sg" {
-  name        = "john_frontend_sg"
+resource "aws_security_group" "Godwin_frontend_sg" {
+  name        = "Godwin_frontend_sg"
   description = "frontend security group"
-  vpc_id      = aws_vpc.godwin_vpc.id
+  vpc_id      = aws_vpc.Godwin_vpc.id
  
   ingress {
     from_port   = 22
@@ -67,10 +67,10 @@ resource "aws_security_group" "john_frontend_sg" {
   }
 }
  
-resource "aws_security_group" "john_backend_sg" {
-  name        = "john_backend_sg"
+resource "aws_security_group" "Godwin_backend_sg" {
+  name        = "Godwin_backend_sg"
   description = "Backend server sg"
-  vpc_id      = aws_vpc.godwin_vpc.id
+  vpc_id      = aws_vpc.Godwin_vpc.id
  
   ingress {
     from_port   = 22
@@ -94,13 +94,16 @@ resource "aws_security_group" "john_backend_sg" {
   }
 }
  
-resource "aws_instance" "john_backend_server" {
+resource "aws_instance" "Godwin_backend_server" {
   ami                    = "ami-020cba7c55df1f615"
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.john_public_subnet.id
-  vpc_security_group_ids = [aws_security_group.john_backend_sg.id]
+  subnet_id              = aws_subnet.Godwin_public_subnet.id
+  vpc_security_group_ids = [aws_security_group.Godwin_backend_sg.id]
   key_name               = "progee1"
- 
+  tags = {
+    Name        = "Godwin_Backend_Server"
+  }
+  
   user_data = <<EOF
 #!/bin/bash
 set -e
@@ -153,13 +156,16 @@ EOF
 }
  
  
-resource "aws_instance" "john_frontend_server" {
+resource "aws_instance" "Godwin_frontend_server" {
   ami                    = "ami-020cba7c55df1f615"
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.john_public_subnet.id
-  vpc_security_group_ids = [aws_security_group.john_frontend_sg.id]
+  subnet_id              = aws_subnet.Godwin_public_subnet.id
+  vpc_security_group_ids = [aws_security_group.Godwin_frontend_sg.id]
   key_name = "progee1"
- 
+  tags = {
+    Name        = "Godwin_frontend_Server"
+  }
+
   user_data = <<EOF
 #!/bin/bash
 # Update package list and install Nginx
