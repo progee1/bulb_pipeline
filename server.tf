@@ -99,7 +99,7 @@ resource "aws_instance" "Godwin_backend_server" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.Godwin_public_subnet.id
   vpc_security_group_ids = [aws_security_group.Godwin_backend_sg.id]
-  key_name               = "progee1"
+  key_name               = "prefer"
   tags = {
     Name        = "Godwin_Backend_Server"
   }
@@ -161,7 +161,7 @@ resource "aws_instance" "Godwin_frontend_server" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.Godwin_public_subnet.id
   vpc_security_group_ids = [aws_security_group.Godwin_frontend_sg.id]
-  key_name = "progee1"
+  key_name = "prefer"
   tags = {
     Name        = "Godwin_frontend_Server"
   }
