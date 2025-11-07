@@ -1,11 +1,9 @@
-
-
-resource "aws_s3_bucket" "godwin_backend_codepipeline_artifact_bucket" {
+resource "aws_s3_bucket" "godwin_frontend_codepipeline_artifact_bucket" {
   bucket = "godwin-frontend-codepipeline-artifact-bucket"
 }
 
-resource "aws_iam_role" "godwin_backend_codepipeline_role" {
-  name = "godwin_backend_codepipeline_role"
+resource "aws_iam_role" "godwin_frontend_codepipeline_role" {
+  name = "godwin_frontend_codepipeline_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -21,8 +19,8 @@ resource "aws_iam_role" "godwin_backend_codepipeline_role" {
   })
 }
 
-resource "aws_iam_policy" "godwin_backend_codepipline_role_policy" {
-  name        = "godwin_backend_codepipline_role_policy"
+resource "aws_iam_policy" "godwin_frontend_codepipline_role_policy" {
+  name        = "godwin_frontend_codepipline_role_policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -45,14 +43,14 @@ resource "aws_iam_policy" "godwin_backend_codepipline_role_policy" {
   })
 }
 
-resource "aws_iam_policy_attachment" "godwin_backend_codepipeline_role_policy_attachment" {
-  name       = "godwin_backend_codepipeline_role_policy_attachment"
-  roles      = [aws_iam_role.godwin_backend_codepipeline_role.name]
-  policy_arn = aws_iam_policy.godwin_backend_codepipline_role_policy.arn
+resource "aws_iam_policy_attachment" "godwin_frontend_codepipeline_role_policy_attachment" {
+  name       = "godwin_frontend_codepipeline_role_policy_attachment"
+  roles      = [aws_iam_role.godwin_frontend_codepipeline_role.name]
+  policy_arn = aws_iam_policy.godwin_frontend_codepipline_role_policy.arn
 }
 
-resource "aws_iam_role" "godwin_backend_codebuild_role" {
-  name = "godwin_backend_codebuild_role"
+resource "aws_iam_role" "godwin_frontend_codebuild_role" {
+  name = "godwin_frontend_codebuild_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -69,8 +67,8 @@ resource "aws_iam_role" "godwin_backend_codebuild_role" {
   })
 }
 
-resource "aws_iam_policy" "godwin_backend_codebuild_role_policy" {
-  name        = "godwin_backend_codebuild_role_policy"
+resource "aws_iam_policy" "godwin_frontend_codebuild_role_policy" {
+  name        = "godwin_frontend_codebuild_role_policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -107,15 +105,15 @@ resource "aws_iam_policy" "godwin_backend_codebuild_role_policy" {
   })
 }
 
-resource "aws_iam_policy_attachment" "godwin_backend_codebuild_role_policy_attachment" {
-  name       = "godwin_backend_codebuild_role_policy_attachment"
-  roles      = [aws_iam_role.godwin_backend_codebuild_role.name]
-  policy_arn = aws_iam_policy.godwin_backend_codebuild_role_policy.arn
+resource "aws_iam_policy_attachment" "godwin_frontend_codebuild_role_policy_attachment" {
+  name       = "godwin_frontend_codebuild_role_policy_attachment"
+  roles      = [aws_iam_role.godwin_frontend_codebuild_role.name]
+  policy_arn = aws_iam_policy.godwin_frontend_codebuild_role_policy.arn
 }
 
-resource "aws_codebuild_project" "godwin_backend_codebuild_build" {
-  name           = "godwin_backend_codebuild_build"
-  service_role = aws_iam_role.godwin_backend_codebuild_role.arn
+resource "aws_codebuild_project" "godwin_frontend_codebuild_build" {
+  name           = "godwin_frontend_codebuild_build"
+  service_role = aws_iam_role.godwin_frontend_codebuild_role.arn
   artifacts {
     type = "CODEPIPELINE"
   }
@@ -131,9 +129,9 @@ resource "aws_codebuild_project" "godwin_backend_codebuild_build" {
   }
 }
 
-resource "aws_codebuild_project" "godwin_backend_codebuild_deploy" {
-  name           = "godwin_backend_codebuild_deploy"
-  service_role = aws_iam_role.godwin_backend_codebuild_role.arn
+resource "aws_codebuild_project" "godwin_frontend_codebuild_deploy" {
+  name           = "godwin_frontend_codebuild_deploy"
+  service_role = aws_iam_role.godwin_frontend_codebuild_role.arn
   artifacts {
     type = "CODEPIPELINE"
   }
@@ -149,11 +147,11 @@ resource "aws_codebuild_project" "godwin_backend_codebuild_deploy" {
   }
 }
 
-resource "aws_codepipeline" "godwin_backend_pipeline" {
-  name     = "godwin_backend_pipeline"
-  role_arn = aws_iam_role.godwin_backend_codepipeline_role.arn
+resource "aws_codepipeline" "godwin_frontend_pipeline" {
+  name     = "godwin_frontend_pipeline"
+  role_arn = aws_iam_role.godwin_frontend_codepipeline_role.arn
   artifact_store {
-    location = aws_s3_bucket.godwin_backend_codepipeline_artifact_bucket.bucket
+    location = aws_s3_bucket.godwin_frontend_codepipeline_artifact_bucket.bucket
     type     = "S3"
   }
   stage {
@@ -187,7 +185,7 @@ resource "aws_codepipeline" "godwin_backend_pipeline" {
       version          = "1"
 
       configuration = {
-        ProjectName    = aws_codebuild_project.godwin_backend_codebuild_build.id
+        ProjectName    = aws_codebuild_project.godwin_frontend_codebuild_build.id
       }
     }
   }
@@ -205,7 +203,7 @@ resource "aws_codepipeline" "godwin_backend_pipeline" {
       version          = "1"
 
       configuration = {
-        ProjectName    = aws_codebuild_project.godwin_backend_codebuild_deploy.id
+        ProjectName    = aws_codebuild_project.godwin_frontend_codebuild_deploy.id
       }
     }
   }
